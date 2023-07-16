@@ -1,12 +1,16 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSetRecoilState } from 'recoil'
+import Button from './Button'
+import { nameState } from '../recoil/atoms/UserAtom'
 
 export default function InsertName() {
   const [name, setName] = useState('')
+  const setNameAtom = useSetRecoilState(nameState)
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    localStorage.setItem('name', name)
+    setNameAtom(name)
   }
 
   return (
@@ -18,15 +22,12 @@ export default function InsertName() {
       <input
         type='text'
         onChange={(event) => setName(event.target.value)}
-        className='py-2 px-4 mt-4'
+        className='py-2 px-4 mt-4 border-2 border-gray-700 shadow-md'
+        value={name}
       />
-      <button
-        disabled={name.length === 0}
-        className='py-2 px-4 min-w-[10rem] bg-gray-400 mt-4'
-        type='submit'
-      >
+      <Button disabled={name.length === 0} className=' mt-4' type='submit'>
         Enter
-      </button>
+      </Button>
     </form>
   )
 }
