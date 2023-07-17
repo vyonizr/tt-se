@@ -6,7 +6,7 @@ interface EducationCardProps {
 
 export default function EducationCard({ education }: EducationCardProps) {
   return (
-    <li key={education.id} className='bg-gray-200 p-4 w-[36rem]'>
+    <li key={education.id} className='bg-gray-200 p-4'>
       <h2 className='font-bold text-lg'>{`${education.degree} @ ${education.school}`}</h2>
       <p className='text-gray-600'>
         {education.start} -{' '}

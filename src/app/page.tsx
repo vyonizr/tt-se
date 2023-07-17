@@ -8,7 +8,7 @@ export default function Home() {
   const nameAtom = useRecoilValue(nameState)
 
   return (
-    <main className='flex min-h-screen flex-col items-center p-24'>
+    <main className='flex min-h-screen flex-col items-center p-16'>
       {nameAtom ? <EducationList /> : <InsertName />}
     </main>
   )
