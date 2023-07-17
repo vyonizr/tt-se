@@ -11,6 +11,8 @@ import useDebounce from '@/hooks/useDebounce'
 import MONTHS from '../constants/months'
 import years from '../constants/years'
 
+import { ISchool, ISchoolOption } from '@/types'
+
 const YEAR_OPTIONS = years()
 const DESCRIPTION_MAX_LENGTH = 1000
 
@@ -54,9 +56,9 @@ export default function NewEducationForm() {
     enabled: debouncedSchoolName.length > 0,
   })
 
-  const schoolOptions = useMemo(() => {
+  const schoolOptions: ISchoolOption[] = useMemo(() => {
     if (data) {
-      return data.map((school, index) => ({
+      return data.map((school: ISchool, index: number) => ({
         id: index,
         value: school.name,
         label: school.name,
