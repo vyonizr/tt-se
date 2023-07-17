@@ -78,21 +78,53 @@ export default function NewEducationForm({ onClose }: INewEducationFormProps) {
     return []
   }, [data])
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const educationObject: IEducation = {
-      id: uuidv4(),
-      school: schoolName.value,
-      degree,
-      field: fieldOfStudy,
-      start: `${startYear.month} ${startYear.year}`,
-      end: `${endYear.month} ${endYear.year}`,
-      grade,
-      description: description.value,
+  function validateForm() {
+    let isValid = true
+
+    if (schoolName.value.length === 0) {
+      setSchoolName({
+        ...schoolName,
+        error: 'School name is required',
+      })
+      isValid = false
     }
 
-    setEducation((prevEducation) => [educationObject, ...prevEducation])
-    onClose()
+    if (startYear.month === 'Month' || startYear.year === 'Year') {
+      setStartYear({
+        ...startYear,
+        error: 'Start year is required',
+      })
+      isValid = false
+    }
+
+    if (description.value.length > DESCRIPTION_MAX_LENGTH) {
+      setDescription({
+        ...description,
+        error: `Description must be less than ${DESCRIPTION_MAX_LENGTH} characters`,
+      })
+      isValid = false
+    }
+
+    return isValid
+  }
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (validateForm()) {
+      const educationObject: IEducation = {
+        id: uuidv4(),
+        school: schoolName.value,
+        degree,
+        field: fieldOfStudy,
+        start: `${startYear.month} ${startYear.year}`,
+        end: `${endYear.month} ${endYear.year}`,
+        grade,
+        description: description.value,
+      }
+
+      setEducation((prevEducation) => [educationObject, ...prevEducation])
+      onClose()
+    }
   }
 
   return (
@@ -110,6 +142,7 @@ export default function NewEducationForm({ onClose }: INewEducationFormProps) {
             setIsDropdownOpen(true)
           }}
           value={schoolName.value}
+          error={schoolName.error}
         />
         {isDropdownOpen && schoolOptions.length > 0 && !isFetching ? (
           <ul className='absolute top-12 left-0 w-full max-h-56 overflow-y-scroll bg-white p-2 border-2 border-gray-700 shadow-md'>
@@ -155,6 +188,7 @@ export default function NewEducationForm({ onClose }: INewEducationFormProps) {
               month: event.target.value,
             })
           }}
+          error={schoolName.error}
         />
         <Dropdown
           options={YEAR_OPTIONS}
