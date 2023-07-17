@@ -3,8 +3,11 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { RecoilRoot } from 'recoil'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 const inter = Inter({ subsets: ['latin'] })
+
+const queryClient = new QueryClient()
 
 export const metadata: Metadata = {
   title: 'Showwcase',
@@ -19,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <RecoilRoot>{children}</RecoilRoot>
+        <QueryClientProvider client={queryClient}>
+          <RecoilRoot>{children}</RecoilRoot>
+        </QueryClientProvider>
       </body>
     </html>
   )
