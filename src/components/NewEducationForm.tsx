@@ -1,8 +1,12 @@
 'use client'
 import { useState } from 'react'
+import { useQuery } from 'react-query'
 
 import TextInput from './TextInput'
 import Dropdown from './Dropdown'
+
+import { getUniversitiesByName } from '@/API'
+import useDebounce from '@/hooks/useDebounce'
 
 import MONTHS from '../constants/months'
 import years from '../constants/years'
@@ -29,6 +33,17 @@ export default function NewEducationForm() {
   const [description, setDescription] = useState({
     value: '',
     error: '',
+  })
+
+  const debouncedSchoolName = useDebounce(schoolName.value)
+
+  const { isFetching, data } = useQuery({
+    queryKey: ['schools', debouncedSchoolName],
+    queryFn: () => {
+      const url = getUniversitiesByName(debouncedSchoolName)
+      fetch(url).then((res) => res.json())
+    },
+    enabled: debouncedSchoolName.length > 0,
   })
 
   return (
