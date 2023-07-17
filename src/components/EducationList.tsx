@@ -27,14 +27,14 @@ export default function InsertName() {
       <Button primary onClick={handleAddEducation}>
         Add Education
       </Button>
-      <Dialog open={isModalOpen} onClose={closeModal} className='relative z-50'>
+      <Dialog open={isModalOpen} onClose={() => {}} className='relative z-50'>
         <div className='fixed inset-0 bg-black/30' aria-hidden='true' />
         <div className='fixed inset-0 flex items-center justify-center'>
           <Dialog.Panel className='w-1/2 h-5/6 rounded bg-white p-8 overflow-y-scroll'>
             <Dialog.Title className='text-2xl font-bold'>
               Add Education
             </Dialog.Title>
-            <NewEducationForm onClose={() => setIsModalOpen(false)} />
+            <NewEducationForm onClose={closeModal} />
           </Dialog.Panel>
         </div>
       </Dialog>
