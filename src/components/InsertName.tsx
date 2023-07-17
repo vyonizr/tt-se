@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSetRecoilState } from 'recoil'
 import Button from './Button'
 import { nameState } from '../recoil/atoms/UserAtom'
