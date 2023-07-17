@@ -1,11 +1,11 @@
 'use client'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useQuery } from 'react-query'
 
 import TextInput from './TextInput'
 import Dropdown from './Dropdown'
 
-import { getUniversitiesByName } from '@/API'
+import { SEARCH_URL } from '@/API'
 import useDebounce from '@/hooks/useDebounce'
 
 import MONTHS from '../constants/months'
@@ -34,32 +34,73 @@ export default function NewEducationForm() {
     value: '',
     error: '',
   })
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const debouncedSchoolName = useDebounce(schoolName.value)
 
   const { isFetching, data } = useQuery({
     queryKey: ['schools', debouncedSchoolName],
-    queryFn: () => {
-      const url = getUniversitiesByName(debouncedSchoolName)
-      fetch(url).then((res) => res.json())
+    queryFn: async () => {
+      const res = await fetch(
+        `${SEARCH_URL}?` +
+          new URLSearchParams({
+            name: encodeURIComponent(debouncedSchoolName),
+            limit: '10',
+          })
+      )
+      const responseJSON = await res.json()
+      return responseJSON
     },
     enabled: debouncedSchoolName.length > 0,
   })
 
+  const schoolOptions = useMemo(() => {
+    if (data) {
+      return data.map((school, index) => ({
+        id: index,
+        value: school.name,
+        label: school.name,
+      }))
+    }
+    return []
+  }, [data])
+
   return (
     <>
       <label className='block mt-4'>School Name</label>
-      <TextInput
-        className='w-full'
-        placeholder='Ex: Boston University'
-        onChange={(event) =>
-          setSchoolName({
-            error: '',
-            value: event.target.value,
-          })
-        }
-        value={schoolName.value}
-      />
+      <div className='relative'>
+        <TextInput
+          className='w-full'
+          placeholder='Ex: Boston University'
+          onChange={(event) => {
+            setSchoolName({
+              error: '',
+              value: event.target.value,
+            })
+            setIsDropdownOpen(true)
+          }}
+          value={schoolName.value}
+        />
+        {isDropdownOpen && schoolOptions.length > 0 && !isFetching ? (
+          <ul className='absolute top-12 left-0 w-full max-h-56 overflow-y-scroll bg-white p-2 border-2 border-gray-700 shadow-md'>
+            {schoolOptions.map((school, index) => (
+              <li
+                key={index}
+                onClick={() => {
+                  setSchoolName({
+                    ...schoolName,
+                    value: school.value,
+                  })
+                  setIsDropdownOpen(false)
+                }}
+                className='p-2 cursor-pointer hover:bg-gray-200'
+              >
+                {school.label}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
       <label className='block mt-4'>Degree</label>
       <TextInput
         className='w-full'
