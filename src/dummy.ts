@@ -9,4 +9,14 @@ export const DUMMY_EDUCATIONS = [
     grade: '3.7 GPA',
     description: 'Lorem Ipsum',
   },
+  {
+    id: 2,
+    school: 'University of California, Berkeley',
+    degree: 'Bachelor of Arts',
+    field: 'Computer Science',
+    start: 'August 2016',
+    end: '',
+    grade: '',
+    description: 'Lorem Ipsum',
+  },
 ]

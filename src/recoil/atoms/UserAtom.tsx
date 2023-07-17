@@ -1,6 +1,7 @@
 import { atom } from 'recoil'
 
 import { DUMMY_EDUCATIONS } from '../../dummy'
+import { IEducation } from '../../types'
 
 const DUMMY_NAME = 'Fitrahtur'
 
@@ -12,6 +13,6 @@ export const nameState = atom({
 
 export const educationState = atom({
   key: 'educationState',
-  default: DUMMY_EDUCATIONS,
+  default: DUMMY_EDUCATIONS as IEducation[],
   // default: [],
 })
