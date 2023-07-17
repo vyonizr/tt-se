@@ -15,6 +15,8 @@ import { educationState } from '../recoil/atoms/UserAtom'
 import MONTHS from '../constants/months'
 import years from '../constants/years'
 
+import { parseMonthAndYear } from '@/utils'
+
 import { ISchool, ISchoolOption, IEducation } from '@/types'
 
 const YEAR_OPTIONS = years()
@@ -41,12 +43,10 @@ export default function NewEducationForm({ onClose }: INewEducationFormProps) {
   const [endYear, setEndYear] = useState({
     month: MONTHS[0].value,
     year: YEAR_OPTIONS[0].value,
-  })
-  const [grade, setGrade] = useState('')
-  const [description, setDescription] = useState({
-    value: '',
     error: '',
   })
+  const [grade, setGrade] = useState('')
+  const [description, setDescription] = useState('')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const debouncedSchoolName = useDebounce(schoolName.value)
@@ -97,11 +97,7 @@ export default function NewEducationForm({ onClose }: INewEducationFormProps) {
       isValid = false
     }
 
-    if (description.value.length > DESCRIPTION_MAX_LENGTH) {
-      setDescription({
-        ...description,
-        error: `Description must be less than ${DESCRIPTION_MAX_LENGTH} characters`,
-      })
+    if (description.length > DESCRIPTION_MAX_LENGTH) {
       isValid = false
     }
 
@@ -116,10 +112,10 @@ export default function NewEducationForm({ onClose }: INewEducationFormProps) {
         school: schoolName.value,
         degree,
         field: fieldOfStudy,
-        start: `${startYear.month} ${startYear.year}`,
-        end: `${endYear.month} ${endYear.year}`,
+        start: parseMonthAndYear(startYear.month, startYear.year),
+        end: parseMonthAndYear(endYear.month, endYear.year),
         grade,
-        description: description.value,
+        description: description,
       }
 
       setEducation((prevEducation) => [educationObject, ...prevEducation])
@@ -186,9 +182,10 @@ export default function NewEducationForm({ onClose }: INewEducationFormProps) {
             setStartYear({
               ...startYear,
               month: event.target.value,
+              error: '',
             })
           }}
-          error={schoolName.error}
+          error={startYear.error}
         />
         <Dropdown
           options={YEAR_OPTIONS}
@@ -208,8 +205,10 @@ export default function NewEducationForm({ onClose }: INewEducationFormProps) {
             setEndYear({
               ...endYear,
               month: event.target.value,
+              error: '',
             })
           }}
+          error={endYear.error}
         />
         <Dropdown
           options={YEAR_OPTIONS}
@@ -232,17 +231,16 @@ export default function NewEducationForm({ onClose }: INewEducationFormProps) {
         <textarea
           className='w-full p-2 border-2 border-gray-700 shadow-md'
           rows={5}
-          onChange={(event) =>
-            setDescription({
-              error: '',
-              value: event.target.value,
-            })
-          }
+          onChange={(event) => setDescription(event.target.value)}
         />
-        <p className='text-sm text-right'>{`${description.value.length}/${DESCRIPTION_MAX_LENGTH}`}</p>
+        <p
+          className={`text-sm text-right ${
+            description.length > DESCRIPTION_MAX_LENGTH ? 'text-red-500' : ''
+          }`}
+        >{`${description.length}/${DESCRIPTION_MAX_LENGTH}`}</p>
       </div>
       <div className='flex justify-end gap-x-4'>
-        <Button>Cancel</Button>
+        <Button onClick={onClose}>Cancel</Button>
         <Button primary type='submit'>
           Add
         </Button>
