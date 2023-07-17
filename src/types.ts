@@ -14,7 +14,7 @@ export interface ISchoolOption {
 }
 
 export interface IEducation {
-  id: number
+  id: string
   school: string
   degree: string
   field: string

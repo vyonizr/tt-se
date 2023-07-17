@@ -1,6 +1,8 @@
+import { v4 as uuidv4 } from 'uuid'
+
 export const DUMMY_EDUCATIONS = [
   {
-    id: 1,
+    id: uuidv4(),
     school: 'University of California, Berkeley',
     degree: 'Bachelor of Arts',
     field: 'Computer Science',
@@ -10,7 +12,7 @@ export const DUMMY_EDUCATIONS = [
     description: 'Lorem Ipsum',
   },
   {
-    id: 2,
+    id: uuidv4(),
     school: 'University of California, Berkeley',
     degree: 'Bachelor of Arts',
     field: 'Computer Science',

@@ -34,11 +34,7 @@ export default function InsertName() {
             <Dialog.Title className='text-2xl font-bold'>
               Add Education
             </Dialog.Title>
-            <NewEducationForm />
-            <div className='flex justify-end gap-x-4'>
-              <Button>Cancel</Button>
-              <Button primary>Add</Button>
-            </div>
+            <NewEducationForm onClose={() => setIsModalOpen(false)} />
           </Dialog.Panel>
         </div>
       </Dialog>

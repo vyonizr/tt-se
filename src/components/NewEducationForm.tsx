@@ -1,22 +1,32 @@
 'use client'
 import { useState, useMemo } from 'react'
 import { useQuery } from 'react-query'
+import { useSetRecoilState } from 'recoil'
+import { v4 as uuidv4 } from 'uuid'
 
 import TextInput from './TextInput'
 import Dropdown from './Dropdown'
+import Button from './Button'
 
 import { SEARCH_URL } from '@/API'
 import useDebounce from '@/hooks/useDebounce'
 
+import { educationState } from '../recoil/atoms/UserAtom'
 import MONTHS from '../constants/months'
 import years from '../constants/years'
 
-import { ISchool, ISchoolOption } from '@/types'
+import { ISchool, ISchoolOption, IEducation } from '@/types'
 
 const YEAR_OPTIONS = years()
 const DESCRIPTION_MAX_LENGTH = 1000
 
-export default function NewEducationForm() {
+export interface INewEducationFormProps {
+  onClose: () => void
+}
+
+export default function NewEducationForm({ onClose }: INewEducationFormProps) {
+  const setEducation = useSetRecoilState(educationState)
+
   const [schoolName, setSchoolName] = useState({
     value: '',
     error: '',
@@ -26,6 +36,7 @@ export default function NewEducationForm() {
   const [startYear, setStartYear] = useState({
     month: MONTHS[0].value,
     year: YEAR_OPTIONS[0].value,
+    error: '',
   })
   const [endYear, setEndYear] = useState({
     month: MONTHS[0].value,
@@ -67,8 +78,25 @@ export default function NewEducationForm() {
     return []
   }, [data])
 
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const educationObject: IEducation = {
+      id: uuidv4(),
+      school: schoolName.value,
+      degree,
+      field: fieldOfStudy,
+      start: `${startYear.month} ${startYear.year}`,
+      end: `${endYear.month} ${endYear.year}`,
+      grade,
+      description: description.value,
+    }
+
+    setEducation((prevEducation) => [educationObject, ...prevEducation])
+    onClose()
+  }
+
   return (
-    <>
+    <form onSubmit={handleSubmit}>
       <label className='block mt-4'>School Name</label>
       <div className='relative'>
         <TextInput
@@ -179,6 +207,12 @@ export default function NewEducationForm() {
         />
         <p className='text-sm text-right'>{`${description.value.length}/${DESCRIPTION_MAX_LENGTH}`}</p>
       </div>
-    </>
+      <div className='flex justify-end gap-x-4'>
+        <Button>Cancel</Button>
+        <Button primary type='submit'>
+          Add
+        </Button>
+      </div>
+    </form>
   )
 }
