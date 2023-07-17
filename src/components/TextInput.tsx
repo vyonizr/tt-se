@@ -14,7 +14,7 @@ export default function TextInput({
   error,
 }: TextInputProps) {
   return (
-    <>
+    <div>
       <input
         type='text'
         onChange={onChange}
@@ -25,6 +25,6 @@ export default function TextInput({
         value={value}
       />
       {error && <p className='text-red-500'>{error}</p>}
-    </>
+    </div>
   )
 }
