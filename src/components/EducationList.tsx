@@ -38,18 +38,20 @@ export default function InsertName() {
           </Dialog.Panel>
         </div>
       </Dialog>
-      <div className='grid grid-cols-[1fr_36rem_1fr] mt-8 gap-x-8'>
-        <ul className='bg-gray-200 p-4 h-fit'>
-          {educations.map((education) => (
-            <li key={education.id}>{education.school}</li>
-          ))}
-        </ul>
-        <ul className='flex flex-col gap-y-4'>
-          {educations.map((education) => (
-            <EducationCard key={education.id} education={education} />
-          ))}
-        </ul>
-      </div>
+      {educations.length > 0 ? (
+        <div className='grid grid-cols-[1fr_36rem_1fr] mt-8 gap-x-8'>
+          <ul className='bg-gray-200 p-4 h-fit'>
+            {educations.map((education) => (
+              <li key={education.id}>{education.school}</li>
+            ))}
+          </ul>
+          <ul className='flex flex-col gap-y-4'>
+            {educations.map((education) => (
+              <EducationCard key={education.id} education={education} />
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </>
   )
 }
